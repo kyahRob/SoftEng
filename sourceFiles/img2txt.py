@@ -3,12 +3,25 @@ import numpy as np
 import operator
 import os
 
+from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.uic import loadUi
+import sys
+
 MIN_CONTOUR_AREA = 100
 
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-imageFilename="robtest.png"
+imageFilename=""
+
+strFinalString=""
+
+class Login(QtWidgets.QMainWindow):
+	
+	def __init__(self):
+		super(Login,self).__init__()
+		loadUi("imageprocgui.ui",self)
 
 class ContourWithData():
 
@@ -32,11 +45,23 @@ class ContourWithData():
         if self.fltArea < MIN_CONTOUR_AREA: return False        # much better validity checking would be necessary
         return True
 
-###################################################################################################
-def main():
+
+def browseimage(x):
+    
+    options = QFileDialog.Options()
+    options |= QFileDialog.DontUseNativeDialog
+    fileName, _ = QFileDialog.getOpenFileName(x,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
+    if fileName:
+        x.dirText.text = "asdasdsa"
+        imageFilename=fileName
+        print(imageFilename)
+
+
+
+def recognimage(x):
     allContoursWithData = []                # declare empty lists,
     validContoursWithData = []              # we will fill these shortly
-
+    
     try:
         npaClassifications = np.loadtxt("classifications.txt", np.float32)                  # read in training classifications
     except:
@@ -58,6 +83,7 @@ def main():
     kNearest.train(npaFlattenedImages, cv2.ml.ROW_SAMPLE, npaClassifications)
 
     imgTestingNumbers = cv2.imread(imageFilename)          # read in testing numbers image
+    print("opened", imageFilename)
 
     if imgTestingNumbers is None:                           # if image was not read successfully
         print ("error: image not read from file \n\n")        # print error message to std out
@@ -122,12 +148,28 @@ def main():
         strCurrentChar = str(chr(int(npaResults[0][0])))                                             # get character from results
 
         strFinalString = strFinalString + strCurrentChar            # append current char to full string
+        x.outputText.setPlainText(strFinalString)
+        
+        
+        
+        cv2.imshow("imgTestingNumbers", imgTestingNumbers)      # show input image with green boxes drawn around found digits
+        
     # end for
 
-    print ("\n" + strFinalString + "\n")                  # show the full string
+###################################################################################################
+def main():
+    app=QtWidgets.QApplication(sys.argv)
+    w=Login()
+    w.browsebtn.clicked.connect(lambda:browseimage(w))
+    w.recogbtn.clicked.connect(lambda:recognimage(w))
 
-    cv2.imshow("imgTestingNumbers", imgTestingNumbers)      # show input image with green boxes drawn around found digits
-    cv2.waitKey(0)                                          # wait for user key press
+    w.show()
+    app.exec_()
+    
+
+
+
+    cv2.waitKey(0)                      # wait for user key press
 
     cv2.destroyAllWindows()             # remove windows from memory
 
