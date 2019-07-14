@@ -36,6 +36,9 @@
       <height>25</height>
      </rect>
     </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -61,19 +64,6 @@
     </property>
     <property name="text">
      <string>Recognized Text File:</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="recogbtn">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>470</y>
-      <width>89</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Recognize</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="outputText">

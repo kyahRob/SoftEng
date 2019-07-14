@@ -13,7 +13,6 @@ MIN_CONTOUR_AREA = 100
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
-imageFilename=""
 
 strFinalString=""
 
@@ -46,15 +45,16 @@ class ContourWithData():
         return True
 
 
-def browseimage(x):
+def browseimage(y):
     
     options = QFileDialog.Options()
     options |= QFileDialog.DontUseNativeDialog
-    fileName, _ = QFileDialog.getOpenFileName(x,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
+    fileName, _ = QFileDialog.getOpenFileName(y,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
     if fileName:
-        x.dirText.text = "asdasdsa"
-        imageFilename=fileName
-        print(imageFilename)
+        y.dirText.setText(fileName)
+        return fileName
+    
+   
 
 
 
@@ -81,9 +81,8 @@ def recognimage(x):
     kNearest = cv2.ml.KNearest_create()                   # instantiate KNN object
 
     kNearest.train(npaFlattenedImages, cv2.ml.ROW_SAMPLE, npaClassifications)
-
-    imgTestingNumbers = cv2.imread(imageFilename)          # read in testing numbers image
-    print("opened", imageFilename)
+    dirx=browseimage(x)
+    imgTestingNumbers = cv2.imread(dirx)# read in testing numbers image
 
     if imgTestingNumbers is None:                           # if image was not read successfully
         print ("error: image not read from file \n\n")        # print error message to std out
@@ -160,8 +159,7 @@ def recognimage(x):
 def main():
     app=QtWidgets.QApplication(sys.argv)
     w=Login()
-    w.browsebtn.clicked.connect(lambda:browseimage(w))
-    w.recogbtn.clicked.connect(lambda:recognimage(w))
+    w.browsebtn.clicked.connect(lambda:recognimage(w))
 
     w.show()
     app.exec_()
