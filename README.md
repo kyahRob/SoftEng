@@ -10,3 +10,4 @@ INSTRUCTIONS:
 > The executable file for the whole program named as "main".
 > Python is used as the programming language of this program .
 > This program was made and run using Ubuntu (for Linux) and Spyder (for Windows).
+> Use case diagram, ERD, and Conceptual class diagram are located on the DIAGRAMS folder.
