@@ -13,13 +13,15 @@ MIN_CONTOUR_AREA = 100
 RESIZED_IMAGE_WIDTH = 20
 RESIZED_IMAGE_HEIGHT = 30
 
+global filedir
+global strFinalString
+filedir = ''
+strFinalString = ''
 
-strFinalString=""
-
-class Login(QtWidgets.QMainWindow):
+class Imgproc(QtWidgets.QMainWindow):
 	
 	def __init__(self):
-		super(Login,self).__init__()
+		super(Imgproc,self).__init__()
 		loadUi("imageprocgui.ui",self)
 
 class ContourWithData():
@@ -46,15 +48,13 @@ class ContourWithData():
 
 
 def browseimage(y):
-    
+    global filedir
     options = QFileDialog.Options()
     options |= QFileDialog.DontUseNativeDialog
     fileName, _ = QFileDialog.getOpenFileName(y,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
     if fileName:
+        filedir=fileName
         y.dirText.setText(fileName)
-        return fileName
-    
-   
 
 
 
@@ -81,8 +81,9 @@ def recognimage(x):
     kNearest = cv2.ml.KNearest_create()                   # instantiate KNN object
 
     kNearest.train(npaFlattenedImages, cv2.ml.ROW_SAMPLE, npaClassifications)
-    dirx=browseimage(x)
-    imgTestingNumbers = cv2.imread(dirx)# read in testing numbers image
+    dirx=filedir
+    print("opening", dirx)
+    imgTestingNumbers = cv2.imread(filedir)# read in testing numbers image
 
     if imgTestingNumbers is None:                           # if image was not read successfully
         print ("error: image not read from file \n\n")        # print error message to std out
@@ -156,27 +157,26 @@ def recognimage(x):
     # end for
 
 ###################################################################################################
-def main():
-    app=QtWidgets.QApplication(sys.argv)
-    w=Login()
-    w.browsebtn.clicked.connect(lambda:recognimage(w))
-
-    w.show()
-    app.exec_()
-    
-
-
-
-    cv2.waitKey(0)                      # wait for user key press
-
-    cv2.destroyAllWindows()             # remove windows from memory
-
-    return
 
 ###################################################################################################
 if __name__ == "__main__":
-    main()
-# end if
+    
+    
+    
+    app=QtWidgets.QApplication(sys.argv)
+    w=Imgproc()
+    w.show()
+    w.recogbtn.clicked.connect(lambda:recognimage(w))
+    w.browsebtn.clicked.connect(lambda:browseimage(w))
+    
+    
+    
+    
+    app.exec_()
+    
+    
+    cv2.waitKey(0)                      # wait for user key press
+    cv2.destroyAllWindows()             # remove windows from memory
 
 
 
